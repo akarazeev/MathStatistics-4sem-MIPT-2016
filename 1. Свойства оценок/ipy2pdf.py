@@ -19,21 +19,25 @@ import os, sys
 import shutil
 
 ip_name = sys.argv[1]
+
+assert ip_name[-6:] == '.ipynb', 'Wrong format. Only .ipynb supported'
+
 name = ip_name[:len(ip_name)-5]  ## with '.' at the end
 
 tex_name = ip_name[:len(ip_name)-5]+"tex"
 tmp_name = "_"+tex_name
 
-os.system("ipython nbconvert {} --to latex".format(ip_name))
+os.system("jupyter nbconvert {} --to latex".format(ip_name))
 
 pttrn = "\documentclass"
-ins = "    \usepackage[T2A]{fontenc}\n"
+ins = "    \usepackage[T2A]{fontenc}\n \
+			\usepackage[utf8]{inputenc}\n \
+			\usepackage[cp1251]{inputenc}\n \
+			\usepackage[english,russian]{babel}\n"
 
 with open(tex_name, "r") as f_old, \
 	open(tmp_name, "w") as f_new:
-
 	flag = 1
-
 	for line in f_old:
 	    f_new.write(line)
 	    if flag and (pttrn in line):
